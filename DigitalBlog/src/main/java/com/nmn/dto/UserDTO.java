@@ -16,5 +16,6 @@ public class UserDTO {
     private String role;
 
     private Boolean isActivate;
+    private Boolean canSaveArticle;
 
 }

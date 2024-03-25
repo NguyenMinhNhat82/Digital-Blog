@@ -27,6 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException("User not found",null);
         }
+        if (!user.getIsActivate())
+            throw new RuntimeException("User is not activate");
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }
 }

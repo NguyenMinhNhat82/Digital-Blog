@@ -24,4 +24,8 @@ public interface UserService {
     public Boolean deActivateUser(Integer id);
 
     public Users findUserByUserName(String userName);
+    Users getUserbyId(Integer id);
+
+    public String givePermissionToSaveArticle(Integer id);
+    public String dennyPermissionToSaveArticle(Integer id);
 }

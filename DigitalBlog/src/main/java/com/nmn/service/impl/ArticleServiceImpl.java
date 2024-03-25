@@ -25,7 +25,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleRepositoryCus articleRepositoryCus;
     @Override
-    public List<Objects> getListArticle(Map<String, String> params) {
+    public List<Articles> getListArticle(Map<String, String> params) {
         return  articleRepositoryCus.getListArticles(params);
     }
 

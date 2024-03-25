@@ -3,6 +3,7 @@ package com.nmn.dto.mapper;
 import com.nmn.dto.UserDTO;
 import com.nmn.model.Users;
 
+import com.nmn.model.enumType.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class UserMapper {
         userDto.setPassword(user.getPassword());
         userDto.setUsername(user.getUsername());
         userDto.setIsActivate(user.getIsActivate());
+        userDto.setCanSaveArticle(user.getCanSaveArticle());
         return userDto;
     }
 
@@ -26,10 +28,11 @@ public class UserMapper {
         }
         else
             user.setId(userDTO.getId());
-        user.setUsername(user.getUsername());
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setRole(user.getRole());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+        user.setRole(Role.valueOf(userDTO.getRole()));
         user.setIsActivate(userDTO.getIsActivate());
+        user.setCanSaveArticle(userDTO.getCanSaveArticle());
         return user;
     }
 }

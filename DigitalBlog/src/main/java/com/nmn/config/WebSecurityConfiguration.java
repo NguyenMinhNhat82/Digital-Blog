@@ -34,11 +34,11 @@ public class WebSecurityConfiguration  {
                 ,"/api/v1/news/comment/save"
                 ).permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers("/api/v1/auth/**","/logout-token","/current-user")
+                .authorizeHttpRequests().requestMatchers("/api/v1/auth/**","/logout-token","/current-user","/logout")
                 .authenticated()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/v1/users/**","/api/v1/news/article/save"
-                ,"/api/v1/news/article/**/delete").hasAnyAuthority("SYS_ADMIN")
+                ,"/api/v1/news/article/{id}/delete").hasAnyAuthority("SYS_ADMIN")
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

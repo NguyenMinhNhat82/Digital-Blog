@@ -39,30 +39,39 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtUtil.extractUsername(token);
-        }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            boolean enabled = true;
-            boolean accountNonExpired = false;
-            boolean credentialsNonExpired = false;
-            boolean accountNonLocked = true;
-            Users user = userRepository.findUsersByUsername(username);
-            Set<GrantedAuthority> authorities = new HashSet<>();
-            authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
-            UserDetails userDetail = new org.springframework.security.core.userdetails.User(username, user.getPassword(), enabled, accountNonExpired,
-                    credentialsNonExpired, accountNonLocked, authorities);
-            if (jwtUtil.validateToken(token, userDetail)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            String authHeader = request.getHeader("Authorization");
+            String token = null;
+            String username = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                username = jwtUtil.extractUsername(token);
+            }
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                boolean enabled = true;
+                boolean accountNonExpired = false;
+                boolean credentialsNonExpired = false;
+                boolean accountNonLocked = true;
+                Users user = userRepository.findUsersByUsername(username);
+                if(!user.getIsActivate())
+                    try {
+                        throw new Exception("User is not activate");
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                Set<GrantedAuthority> authorities = new HashSet<>();
+                authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+                UserDetails userDetail = new org.springframework.security.core.userdetails.User(username, user.getPassword(), enabled, accountNonExpired,
+                        credentialsNonExpired, accountNonLocked, authorities);
+                if (jwtUtil.validateToken(token, userDetail)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+
             }
 
-        }
+
+
 
         filterChain.doFilter(request, response);
 

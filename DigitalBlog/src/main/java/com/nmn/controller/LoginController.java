@@ -4,9 +4,11 @@ package com.nmn.controller;
 import com.nmn.dto.AuthenticationDTO;
 import com.nmn.dto.response.AuthenticationResponse;
 import com.nmn.model.Users;
+import com.nmn.service.RedisService;
 import com.nmn.service.UserService;
 import com.nmn.service.impl.UserDetailsServiceImpl;
 import com.nmn.util.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class LoginController {
     @Autowired
     private UserService   userService;
 
+    @Autowired
+    private RedisService  redisService;
+
     @GetMapping("test")
     public String test()
     {
@@ -60,9 +65,9 @@ public class LoginController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationDTO.getUsername());
         Users user = userService.findUserByUserName(userDetails.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-//        if(!jwt.isEmpty()  || user != null){
-//            tokenService.saveToken(user.getId(),jwt);
-//        }
+        if(!jwt.isEmpty()  || user != null){
+            redisService.saveToken(user.getId(),jwt);
+        }
         return new AuthenticationResponse(jwt);
 
     }
@@ -71,5 +76,19 @@ public class LoginController {
     public ResponseEntity<Users> currentUser(Principal user){
         Users u = userService.findUserByUserName(user.getName());
         return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+
+
+    @Operation(summary = "logout", description = "Log out")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/logout")
+    public AuthenticationResponse logout(Principal user){
+        Users userAuthentication = userService.findUserByUserName(user.getName());
+        if(user!= null){
+            redisService.deleteToken(userAuthentication.getId());
+            return new AuthenticationResponse("Logged out");
+        }
+        return new AuthenticationResponse("Log out fail");
     }
 }

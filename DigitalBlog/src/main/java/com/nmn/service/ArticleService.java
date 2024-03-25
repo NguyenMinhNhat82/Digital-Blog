@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Service
 public interface ArticleService {
-    public List<Objects> getListArticle(Map<String, String> params);
+    public List<Articles> getListArticle(Map<String, String> params);
 
     public Articles saveArticle(ArticleDTO articleDTO);
 

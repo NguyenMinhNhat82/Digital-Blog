@@ -2,6 +2,7 @@ package com.nmn.dto.mapper;
 
 import com.nmn.dto.CommentDTO;
 import com.nmn.model.Comments;
+import com.nmn.model.Users;
 import com.nmn.repository.ArticleRepository;
 import com.nmn.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class CommentMapper {
         comment.setContent(commentDTO.getContent());
         comment.setUpdatedDate(commentDTO.getUpdatedDate());
         comment.setCreatedDate(commentDTO.getCreatedDate());
-        comment.setUserId(userRepository.findUsersById(comment.getId()));
+        comment.setUserId(userRepository.findUsersById(commentDTO.getUserID()));
         comment.setArticleId(articleRepository.findArticlesById(commentDTO.getArticleID()));
         return comment;
 

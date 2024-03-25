@@ -22,7 +22,7 @@ public class ArticleRepositoryCus {
 
     @Autowired
     EntityManager em;
-    public List<Objects>getListArticles(Map<String, String> params){
+    public List<Articles>getListArticles(Map<String, String> params){
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Articles> q = cb.createQuery(Articles.class);
         Root<Articles> userRoot = q.from(Articles.class);

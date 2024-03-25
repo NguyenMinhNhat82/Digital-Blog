@@ -89,5 +89,34 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUsersByUsername(userName);
     }
 
+    @Override
+    public Users getUserbyId(Integer id) {
+        return userRepository.findUsersById(id);
+    }
+
+    @Override
+    public String givePermissionToSaveArticle(Integer id) {
+        try{
+            Users user = userRepository.findUsersById(id);
+            user.setCanSaveArticle(true);
+            userRepository.save(user);
+            return  "SUCCESS";
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
+    }
+
+    @Override
+    public String dennyPermissionToSaveArticle(Integer id) {
+        try{
+            Users user = userRepository.findUsersById(id);
+            user.setCanSaveArticle(false);
+            userRepository.save(user);
+            return  "SUCCESS";
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
+    }
+
 
 }
