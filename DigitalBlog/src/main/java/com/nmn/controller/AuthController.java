@@ -1,6 +1,7 @@
 package com.nmn.controller;
 
 import com.nmn.dto.AuthenticationDTO;
+import com.nmn.dto.ChangePasswordDTO;
 import com.nmn.dto.UserDTO;
 import com.nmn.dto.response.AuthenticationResponse;
 import com.nmn.model.Users;
@@ -40,6 +41,7 @@ public class AuthController {
     private AuthService authService;
 
 
+    //Update profile of own user
     @Operation(summary = "Update profile", description = "Update profile")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/update-profile")
@@ -53,11 +55,8 @@ public class AuthController {
     @Operation(summary = "Change password", description = "Change password")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}/change-password")
-    ResponseEntity<String> changePassword(@RequestBody Map<String,String> request, @PathVariable("id") Integer id){
-        String password = request.get("password");
-        if(userService.changePassword(id,password))
-            return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-        return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+    ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO request, @PathVariable("id") Integer id){
+        return new ResponseEntity<>(userService.changePassword(id,request), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/read-profile")
